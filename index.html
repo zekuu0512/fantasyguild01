@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STORY of FANTASY GUILD</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #111;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 30px;
+    }
+
+    .stamp {
+      display: none;
+      padding: 25px;
+      border: 2px solid #b58cff;
+      border-radius: 20px;
+      background: #1c1628;
+      margin-bottom: 25px;
+    }
+
+    .stamp h2 {
+      color: #c9a7ff;
+      margin-top: 0;
+    }
+
+    .message {
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 30px;
+      padding: 14px 28px;
+      font-size: 16px;
+      background: #6d4aff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #555;
+      cursor: default;
+    }
+
+    .status {
+      margin-top: 30px;
+      padding: 15px;
+      border-radius: 12px;
+      background: #222;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1>STORY of FANTASY GUILD</h1>
+
+    <div class="subtitle">
+      7つの世界から魔法のアイテムを探せ
+    </div>
+
+    <div id="stamp" class="stamp">
+      <h2>🔮 錬成の属性紋</h2>
+
+      <div class="message">
+        ALCHEMIST<br>
+        属性紋を発見した！
+      </div>
+
+      <button id="getButton" onclick="getStamp()">
+        属性紋を獲得する
+      </button>
+    </div>
+
+    <div id="noStamp">
+      このページはスタンプラリーの入口です。
+    </div>
+
+    <div class="status">
+      <div>獲得した属性紋</div>
+      <div id="count">0 / 7</div>
+    </div>
+
+  </div>
+
+  <script>
+
+    // 獲得済みスタンプを読み込む
+    let stamps = JSON.parse(
+      localStorage.getItem("fantasyGuildStamps") || "[]"
+    );
+
+    // URLからスタンプ情報を取得
+    const params = new URLSearchParams(window.location.search);
+    const stamp = params.get("stamp");
+
+    // 錬成のQRから来た場合
+    if (stamp === "alchemist") {
+      document.getElementById("stamp").style.display = "block";
+      document.getElementById("noStamp").style.display = "none";
+
+      if (stamps.includes("alchemist")) {
+        document.getElementById("getButton").disabled = true;
+        document.getElementById("getButton").textContent = "獲得済み";
+      }
+    }
+
+    // 属性紋を獲得
+    function getStamp() {
+
+      if (!stamps.includes("alchemist")) {
+        stamps.push("alchemist");
+
+        localStorage.setItem(
+          "fantasyGuildStamps",
+          JSON.stringify(stamps)
+        );
+      }
+
+      document.getElementById("getButton").disabled = true;
+      document.getElementById("getButton").textContent = "獲得済み";
+
+      updateCount();
+
+      alert("🔮 錬成の属性紋を獲得しました！");
+    }
+
+    // 獲得数を表示
+    function updateCount() {
+      document.getElementById("count").textContent =
+        stamps.length + " / 7";
+    }
+
+    updateCount();
+
+  </script>
+
+</body>
+</html>
