@@ -113,33 +113,89 @@ style="width:100%; max-width:320px; height:auto; display:block; margin:20px auto
   </div>
 
   <script>
+    // 7属性紋の情報
+    const attributes = {
+      alchemist: {
+        name: "錬成",
+        emoji: "🔮",
+        english: "ALCHEMIST",
+        image: "https://drive.google.com/thumbnail?id=1C-R3qs-gomvKSlZ73_6umvbBhWyO-UgV&sz=w1000"
+      },
+      gemmaster: {
+        name: "装飾",
+        emoji: "💎",
+        english: "GEM MASTER",
+        image: "https://drive.google.com/thumbnail?id=1tJe2ZaTdOLEJR7vPBUGit5UDd-jcD3lq&sz=w1000"
+      },
+      blacksmith: {
+        name: "鍛造",
+        emoji: "🔨",
+        english: "BLACKSMITH",
+        image: "https://drive.google.com/thumbnail?id=1FFttmEON8KDu07-kyd8RIdgG3q7QXnKb&sz=w1000"
+      },
+      tailor: {
+        name: "縫製",
+        emoji: "🧵",
+        english: "TAILOR",
+        image: "https://drive.google.com/thumbnail?id=1KhXRAopdqKdq0tNaBaFRMZ0Sw7WijOCA&sz=w1000"
+      },
+      scribe: {
+        name: "紙工",
+        emoji: "📜",
+        english: "SCRIBE",
+        image: "https://drive.google.com/thumbnail?id=1bqNbkgMYRM2zwmRWg_YUYYMtpcr7_ng8&sz=w1000"
+      },
+      woodsmith: {
+        name: "樹工",
+        emoji: "🌳",
+        english: "WOODSMITH",
+        image: "https://drive.google.com/thumbnail?id=1PvfZ_aRvgcVa-8UVKTv4iKC0T_B3CoMv&sz=w1000"
+      },
+      herbalist: {
+        name: "香食",
+        emoji: "🌿",
+        english: "HERBALIST",
+        image: "https://drive.google.com/thumbnail?id=1IfyROPcbEedakOompVGYRpVkK4xqsu2y&sz=w1000"
+      }
+    };
 
-    // 獲得済みスタンプを読み込む
+    // 保存済みの属性紋を読み込む
     let stamps = JSON.parse(
       localStorage.getItem("fantasyGuildStamps") || "[]"
     );
 
-    // URLからスタンプ情報を取得
+    // URLから今回の属性紋を取得
     const params = new URLSearchParams(window.location.search);
     const stamp = params.get("stamp");
+    const current = attributes[stamp];
 
-    // 錬成のQRから来た場合
-    if (stamp === "alchemist") {
+    // 対応するQRコードから来た場合だけ表示
+    if (current) {
       document.getElementById("stamp").style.display = "block";
       document.getElementById("noStamp").style.display = "none";
 
-      if (stamps.includes("alchemist")) {
+      document.querySelector("#stamp h2").textContent =
+        current.emoji + " " + current.name + "の属性紋";
+
+      document.querySelector("#stamp .message").innerHTML =
+        current.english + "<br>属性紋を発見した！";
+
+      const image = document.querySelector("#stamp img");
+      image.src = current.image;
+      image.alt = current.name + "の属性紋 " + current.english;
+
+      if (stamps.includes(stamp)) {
         document.getElementById("getButton").disabled = true;
         document.getElementById("getButton").textContent = "獲得済み";
       }
     }
 
-    // 属性紋を獲得
+    // 属性紋を獲得する
     function getStamp() {
+      if (!current) return;
 
-      if (!stamps.includes("alchemist")) {
-        stamps.push("alchemist");
-
+      if (!stamps.includes(stamp)) {
+        stamps.push(stamp);
         localStorage.setItem(
           "fantasyGuildStamps",
           JSON.stringify(stamps)
@@ -150,8 +206,7 @@ style="width:100%; max-width:320px; height:auto; display:block; margin:20px auto
       document.getElementById("getButton").textContent = "獲得済み";
 
       updateCount();
-
-      alert("🔮 錬成の属性紋を獲得しました！");
+      alert(current.emoji + " " + current.name + "の属性紋を獲得しました！");
     }
 
     // 獲得数を表示
@@ -160,9 +215,7 @@ style="width:100%; max-width:320px; height:auto; display:block; margin:20px auto
         stamps.length + " / 7";
     }
 
-    updateCount();
-
-  </script>
+    updateCount();  </script>
 
 </body>
 </html>
