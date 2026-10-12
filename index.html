@@ -72,6 +72,47 @@
       background: #222;
       font-size: 14px;
     }
+    
+/* 7紋コンプリート演出 */
+.complete-message {
+  margin-top: 24px;
+  padding: 20px 12px;
+  text-align: center;
+  color: #f5df9b;
+  border: 1px solid #b99a55;
+  border-radius: 12px;
+  background: rgba(35, 24, 55, 0.88);
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+.complete-show {
+  animation: completeReveal 1.8s ease-out forwards;
+}
+
+.complete-message h2 {
+  font-size: 1.25rem;
+  margin: 0 0 12px;
+}
+
+.complete-message p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+@keyframes completeReveal {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
   </style>
 </head>
 
@@ -104,13 +145,19 @@
     </div>
 
     <div id="noStamp">
-      このページはスタンプラリーの入口です。
+      このページはスタンプラリーの入口です
     </div>
 
-    <div class="status">
-      <div>獲得した属性紋</div>
-      <div id="count">0 / 7</div>
-    </div>
+    
+<div class="status">
+  <div>獲得した属性紋</div>
+  <div id="count">0 / 7</div>
+</div>
+
+<div id="completeMessage" class="complete-message" style="display: none;">
+  <h2>✦ 7つの属性紋、コンプリート！ ✦</h2>
+  <p>すべての属性紋が冒険者の手に集まった……</p>
+</div>
 
   </div>
 
@@ -211,11 +258,18 @@
       alert(current.emoji + " " + current.name + "の属性紋を獲得しました！");
     }
 
-    // 獲得数を表示
-    function updateCount() {
-      document.getElementById("count").textContent =
-        stamps.length + " / 7";
-    }
+   // 獲得数を表示
+function updateCount() {
+  document.getElementById("count").textContent =
+    stamps.length + " / 7";
+
+  // 7つすべて集めたらコンプリート演出
+  if (stamps.length >= 7) {
+    const message = document.getElementById("completeMessage");
+    message.style.display = "block";
+    message.classList.add("complete-show");
+  }
+}
 
     updateCount(); 
  　 </script>
