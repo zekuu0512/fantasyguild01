@@ -151,7 +151,7 @@
     
 <div class="status">
   <div>獲得した属性紋</div>
-  <div id="count">0 / 7</div>
+  <div id="count">0 / 9</div>
 </div>
 
 <div id="completeMessage" class="complete-message" style="display: none;">
@@ -205,6 +205,18 @@
         emoji: "🌿",
         english: "HERBALIST",
         image: "https://drive.google.com/thumbnail?id=1iNg8QRQMvhhqeC93FV2J8oFF3k69Z3OW&sz=w1000"
+      },
+      stamp8: {
+        name: "ハロウィン",
+        emoji: "🎃",
+        english: "HALLOWEEN",
+        image: "https://drive.google.com/thumbnail?id=1rh_W79j4HtyCcBz-ecU8ZHdSpn1eZrCq&sz=w1000"
+      },
+      stamp9: {
+        name: "終幕",
+        emoji: "🌙",
+        english: "FINAL CHAPTER",
+        image: "https://drive.google.com/thumbnail?id=1Av7nO6GJ8owAdMgaUgcYXbTNnLrEi93a&sz=w1000"
       }
     };
 
@@ -226,8 +238,14 @@
       document.querySelector("#stamp h2").textContent =
         current.emoji + " " + current.name + "の属性紋";
 
+            const messageText = {
+        stamp8: "第8紋を発見した！",
+        stamp9: "第9紋を発見した！"
+      };
+
       document.querySelector("#stamp .message").innerHTML =
-        current.english + "<br>属性紋を発見した！";
+        current.english + "<br>" +
+        (messageText[stamp] || "属性紋を発見した！");
 
       const image = document.querySelector("#stamp img");
       image.src = current.image;
@@ -261,10 +279,24 @@
    // 獲得数を表示
 function updateCount() {
   document.getElementById("count").textContent =
-    stamps.length + " / 7";
+    stamps.length + " / 9";
 
-  // 7つすべて集めたらコンプリート演出
-  if (stamps.length >= 7) {
+  // 7つの属性紋を集めたらコンプリート演出
+  const attributeKeys = [
+    "alchemist",
+    "gemmaster",
+    "blacksmith",
+    "tailor",
+    "scribe",
+    "woodsmith",
+    "herbalist"
+  ];
+
+  const attributeCount = attributeKeys.filter(
+    key => stamps.includes(key)
+  ).length;
+
+  if (attributeCount >= 7) {
     const message = document.getElementById("completeMessage");
     message.style.display = "block";
     message.classList.add("complete-show");
