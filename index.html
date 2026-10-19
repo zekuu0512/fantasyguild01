@@ -113,6 +113,57 @@
   }
 }
 
+/* 第8紋：ハロウィン特別演出 */
+.stamp.halloween-magic {
+  position: relative;
+  overflow: hidden;
+  border-color: #e4b45e;
+  background: radial-gradient(circle at 50% 30%, #48236a, #1c102a 75%);
+  box-shadow: 0 0 16px rgba(176, 82, 255, 0.45),
+              inset 0 0 18px rgba(230, 178, 84, 0.12);
+  animation: halloweenPulse 3s ease-in-out infinite;
+}
+
+.stamp.halloween-magic img {
+  animation: halloweenReveal 1.8s ease-out both;
+  filter: drop-shadow(0 0 12px rgba(234, 184, 90, 0.55));
+}
+
+.stamp.halloween-magic h2 {
+  color: #f3c76c;
+  text-shadow: 0 0 12px rgba(222, 153, 66, 0.65);
+}
+
+@keyframes halloweenPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(176, 82, 255, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(176, 82, 255, 0.8),
+                0 0 12px rgba(245, 188, 84, 0.45);
+  }
+}
+
+@keyframes halloweenReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.75) rotate(-5deg);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+    filter: blur(0) drop-shadow(0 0 12px rgba(234, 184, 90, 0.55));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp.halloween-magic,
+  .stamp.halloween-magic img {
+    animation: none;
+  }
+}
+
   </style>
 </head>
 
@@ -232,6 +283,8 @@
 
     // 対応するQRコードから来た場合だけ表示
     if (current) {
+      if (stamp === "stamp8") document.getElementById("stamp").classList.add("halloween-magic");
+
       document.getElementById("stamp").style.display = "block";
       document.getElementById("noStamp").style.display = "none";
 
