@@ -344,8 +344,14 @@
 
     // 対応するQRコードから来た場合だけ表示
     if (current) {
-      if (stamp === "stamp8") document.getElementById("stamp").classList.add("halloween-magic");
-　　　 if (stamp === "stamp9") document.getElementById("stamp").classList.add("final-moonlight");
+      
+if (stamp === "stamp8") {
+  document.getElementById("stamp").classList.add("halloween-magic");
+}
+
+if (stamp === "stamp9") {
+  document.getElementById("stamp").classList.add("final-moonlight");
+}
 
       document.getElementById("stamp").style.display = "block";
       document.getElementById("noStamp").style.display = "none";
