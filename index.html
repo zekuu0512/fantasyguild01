@@ -224,7 +224,97 @@
     animation: none;
   }
 }
+/* 第10紋：創設の儀 */
+#secretGate {
+  padding: 24px 15px;
+  border: 1px solid #d5b66c;
+  border-radius: 18px;
+  background: radial-gradient(
+    circle,
+    #38234e 0%,
+    #171020 85%
+  );
+  box-shadow: 0 0 20px rgba(183, 125, 255, 0.25);
+}
 
+#secretGate h2 {
+  color: #f5db9b;
+  font-size: 20px;
+  text-shadow: 0 0 12px rgba(245, 219, 155, 0.6);
+}
+
+#secretButton {
+  margin-top: 15px;
+  background: linear-gradient(135deg, #7952cb, #d6a54d);
+  box-shadow: 0 0 16px rgba(198, 153, 255, 0.5);
+}
+
+/* 儀式開始時の共鳴 */
+#secretGate.ritual-active {
+  animation: ritualPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes ritualPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(183, 125, 255, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 0 45px rgba(183, 125, 255, 0.9),
+      0 0 25px rgba(255, 215, 130, 0.7);
+  }
+}
+
+/* SSRカード召喚 */
+#secretReveal {
+  padding: 24px 12px;
+  border: 2px solid #f1d99c;
+  border-radius: 20px;
+  background: radial-gradient(
+    circle at 50% 20%,
+    #594675,
+    #171324 80%
+  );
+  box-shadow: 0 0 30px rgba(245, 219, 155, 0.45);
+}
+
+#secretReveal.ssr-appear {
+  animation: ssrReveal 2.5s ease-out both;
+}
+
+#secretReveal h2 {
+  color: #fff0bc;
+  text-shadow: 0 0 18px #e9c979;
+}
+
+#secretReveal img {
+  box-shadow: 0 0 22px rgba(245, 219, 155, 0.6);
+}
+
+@keyframes ssrReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+    filter: blur(14px) brightness(2);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.04);
+    filter: blur(0) brightness(1.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #secretGate.ritual-active,
+  #secretReveal.ssr-appear {
+    animation: none;
+  }
+}
   </style>
 </head>
 
@@ -270,7 +360,29 @@
   <h2>✦ 7つの属性紋、コンプリート！ ✦</h2>
   <p>すべての属性紋が冒険者の手に集まった……</p>
 </div>
+<!-- 第10紋：創設の儀 -->
+<div id="secretGate" style="display: none; margin-top: 30px;">
+  <h2>✦ 二つの紋が共鳴している ✦</h2>
+  <p>まだ見ぬ物語の扉が、開かれようとしている……</p>
 
+  <button id="secretButton" onclick="startSecretRitual()">
+    🌟 創設の儀を始める
+  </button>
+</div>
+
+<!-- 第10紋：SSRカード表示エリア -->
+<div id="secretReveal" style="display: none; margin-top: 30px;">
+  <h2>🌟 第十の紋 🌟</h2>
+  <p>すべての想いが集う場所</p>
+
+  <img
+    src="https://drive.google.com/thumbnail?id=16es9k4LCBo5GEpJzgZwxnsd5LIErFDy9&sz=w1000"
+    alt="第十の紋 星々の祝宴"
+    style="width:100%; max-width:400px; height:auto; border-radius:12px;"
+  >
+
+  <p>✦ 星々の祝宴 ✦</p>
+</div>
   </div>
 
   <script>
@@ -415,9 +527,17 @@ if (stamp === "stamp9") {
 
    // 獲得数を表示
 function updateCount() {
-  document.getElementById("count").textContent =
-    stamps.length + " / 9";
+  // 第10紋を獲得した後だけ全10紋を表示
+const hasFinalStamp = stamps.includes("stamp10");
 
+const validStampKeys = Object.keys(attributes);
+
+const acquiredCount = validStampKeys.filter(
+  key => stamps.includes(key)
+).length;
+
+document.getElementById("count").textContent =
+  acquiredCount + (hasFinalStamp ? " / 10" : " / 9");
   // 7つの属性紋を集めたらコンプリート演出
   const attributeKeys = [
     "alchemist",
@@ -433,14 +553,85 @@ function updateCount() {
     key => stamps.includes(key)
   ).length;
 
-  if (attributeCount >= 7) {
+    if (attributeCount >= 7) {
     const message = document.getElementById("completeMessage");
     message.style.display = "block";
     message.classList.add("complete-show");
   }
-}
 
+  // 第8紋と第9紋を両方獲得すると秘密の扉が現れる
+  const secretGate = document.getElementById("secretGate");
+
+  const canOpenGate =
+    stamps.includes("stamp8") &&
+    stamps.includes("stamp9");
+
+  if (canOpenGate && !hasFinalStamp) {
+  secretGate.style.display = "block";
+} else {
+  secretGate.style.display = "none";
+}
+}
+// 第10紋：創設の儀
+let ritualRunning = false;
+
+function startSecretRitual() {
+  // 第8紋と第9紋の両方が必要
+  if (
+    !stamps.includes("stamp8") ||
+    !stamps.includes("stamp9") ||
+    ritualRunning
+  ) {
+    return;
+  }
+
+  ritualRunning = true;
+
+  const gate = document.getElementById("secretGate");
+  const reveal = document.getElementById("secretReveal");
+  const button = document.getElementById("secretButton");
+
+  button.disabled = true;
+  button.textContent = "✨ 魔力が集まっている……";
+  gate.classList.add("ritual-active");
+
+  // 3秒後にSSRカードを召喚
+  setTimeout(() => {
+    gate.classList.remove("ritual-active");
+    gate.style.display = "none";
+
+    reveal.style.display = "block";
+    reveal.classList.add("ssr-appear");
+
+    // 初回だけ第10紋を保存
+    if (!stamps.includes("stamp10")) {
+      stamps.push("stamp10");
+      localStorage.setItem(
+        "fantasyGuildStamps",
+        JSON.stringify(stamps)
+      );
+    }
+
+    updateCount();
+    reveal.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    ritualRunning = false;
+  }, 3000);
+}
     updateCount(); 
+    // 第10紋を獲得済みならSSRカードを再表示
+if (
+  stamps.includes("stamp10") &&
+  stamps.includes("stamp8") &&
+  stamps.includes("stamp9")
+) {
+  const reveal = document.getElementById("secretReveal");
+
+  reveal.style.display = "block";
+}
   </script>
 
 </body>
