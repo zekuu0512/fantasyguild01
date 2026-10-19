@@ -164,6 +164,67 @@
   }
 }
 
+/* 第9紋：終幕・月光の特別演出 */
+.stamp.final-moonlight {
+  position: relative;
+  overflow: hidden;
+  border-color: #dce9ff;
+  background: radial-gradient(
+    circle at 50% 25%,
+    #314f79 0%,
+    #19253f 55%,
+    #101322 100%
+  );
+  box-shadow: 0 0 20px rgba(153, 204, 255, 0.45),
+              inset 0 0 20px rgba(235, 242, 255, 0.15);
+  animation: moonlightPulse 4s ease-in-out infinite;
+}
+
+.stamp.final-moonlight h2 {
+  color: #eaf4ff;
+  text-shadow: 0 0 14px rgba(180, 219, 255, 0.9);
+}
+
+.stamp.final-moonlight img {
+  animation: moonlightReveal 2.4s ease-out both;
+}
+
+@keyframes moonlightPulse {
+  0%, 100% {
+    box-shadow: 0 0 12px rgba(153, 204, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(190, 220, 255, 0.8),
+                0 0 16px rgba(245, 224, 168, 0.35);
+  }
+}
+
+@keyframes moonlightReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(25px) scale(0.85);
+    filter: blur(12px) brightness(1.8);
+  }
+  65% {
+    opacity: 1;
+    filter: blur(0) brightness(1.4)
+            drop-shadow(0 0 22px #c5e7ff);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: brightness(1)
+            drop-shadow(0 0 12px #a7d5ff);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp.final-moonlight,
+  .stamp.final-moonlight img {
+    animation: none;
+  }
+}
+
   </style>
 </head>
 
@@ -284,6 +345,7 @@
     // 対応するQRコードから来た場合だけ表示
     if (current) {
       if (stamp === "stamp8") document.getElementById("stamp").classList.add("halloween-magic");
+　　　 if (stamp === "stamp9") document.getElementById("stamp").classList.add("final-moonlight");
 
       document.getElementById("stamp").style.display = "block";
       document.getElementById("noStamp").style.display = "none";
