@@ -324,12 +324,20 @@
         english: "HALLOWEEN",
         image: "https://drive.google.com/thumbnail?id=1rh_W79j4HtyCcBz-ecU8ZHdSpn1eZrCq&sz=w1000"
       },
-      stamp9: {
-        name: "終幕",
-        emoji: "🌙",
-        english: "FINAL CHAPTER",
-        image: "https://drive.google.com/thumbnail?id=1Av7nO6GJ8owAdMgaUgcYXbTNnLrEi93a&sz=w1000"
-      }
+      
+stamp9: {
+  name: "終幕",
+  emoji: "🌙",
+  english: "FINAL CHAPTER",
+  image: "https://drive.google.com/thumbnail?id=1Av7nO6GJ8owAdMgaUgcYXbTNnLrEi93a&sz=w1000"
+},
+stamp10: {
+  name: "第十の紋",
+  emoji: "🌟",
+  english: "STARS' BANQUET",
+  image: "https://drive.google.com/thumbnail?id=16es9k4LCBo5GEpJzgZwxnsd5LIErFDy9&sz=w1000"
+}
+
     };
 
     // 保存済みの属性紋を読み込む
@@ -340,7 +348,15 @@
     // URLから今回の属性紋を取得
     const params = new URLSearchParams(window.location.search);
     const stamp = params.get("stamp");
-    const current = attributes[stamp];
+    
+const secretUnlocked =
+  stamps.includes("stamp8") && stamps.includes("stamp9");
+
+const current =
+  stamp === "stamp10"
+    ? null
+    : attributes[stamp];
+
 
     // 対応するQRコードから来た場合だけ表示
     if (current) {
