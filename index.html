@@ -315,6 +315,37 @@
     animation: none;
   }
 }
+    /* 第8・9紋：封印と導きのコンパス */
+#sealGate {
+  display: none;
+  padding: 24px 15px;
+  margin-bottom: 25px;
+  border: 1px solid #c8a66c;
+  border-radius: 18px;
+  background: radial-gradient(circle at top, #30223f, #16131f);
+  color: #f2dfb3;
+}
+
+#sealGate h2 {
+  color: #f5d895;
+}
+
+#sealGate p {
+  line-height: 1.8;
+}
+
+#missingSigils {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+  max-width: 280px;
+  margin: 16px auto 0;
+}
+
+#missingSigils li {
+  padding: 8px 10px;
+  border-bottom: 1px solid #655473;
+}
   </style>
 </head>
 
@@ -345,7 +376,24 @@
         属性紋を獲得する
       </button>
     </div>
+<!-- 第8・9紋：封印された紋章 -->
+<div id="sealGate" role="status">
+  <h2>🔒 ― 封印された紋章 ―</h2>
 
+  <p>
+    紋章は７つ集めて初めて封印を解く鍵となる。<br>
+    欠けた属性紋をさがすのだ！！
+  </p>
+
+  <h3>🧭 導きのコンパス</h3>
+
+  <p>
+    コンパスの針が、まだ見ぬ属性紋を
+    指し示している……
+  </p>
+
+  <ul id="missingSigils"></ul>
+</div>
     <div id="noStamp">
       このページはスタンプラリーの入口です
     </div>
@@ -468,10 +516,48 @@ const current =
   stamp === "stamp10"
     ? null
     : attributes[stamp];
+// 第8・9紋：封印の判定
+const sevenAttributeKeys = [
+  "alchemist",
+  "gemmaster",
+  "blacksmith",
+  "tailor",
+  "scribe",
+  "woodsmith",
+  "herbalist"
+];
 
+// 未取得の属性紋を調べる
+const missingAttributes = sevenAttributeKeys.filter(
+  key => !stamps.includes(key)
+);
 
-    // 対応するQRコードから来た場合だけ表示
-    if (current) {
+// 7属性が揃っていなければ8・9番を封印
+const sealed =
+  (stamp === "stamp8" || stamp === "stamp9") &&
+  missingAttributes.length > 0;
+
+// 封印画面とコンパスを表示
+if (sealed) {
+  document.getElementById("sealGate").style.display = "block";
+  document.getElementById("noStamp").style.display = "none";
+
+  const list = document.getElementById("missingSigils");
+
+  missingAttributes.forEach(key => {
+    const item = document.createElement("li");
+
+    item.textContent =
+      "🧭 " +
+      attributes[key].emoji + " " +
+      attributes[key].name + "の属性紋";
+
+    list.appendChild(item);
+  });
+}
+    
+// 対応するQRコードから来た場合だけ表示
+if (current && !sealed) {
       
 if (stamp === "stamp8") {
   document.getElementById("stamp").classList.add("halloween-magic");
@@ -508,7 +594,7 @@ if (stamp === "stamp9") {
 
     // 属性紋を獲得する
     function getStamp() {
-      if (!current) return;
+      if (!current || sealed) return;
 
       if (!stamps.includes(stamp)) {
         stamps.push(stamp);
@@ -563,9 +649,11 @@ document.getElementById("count").textContent =
   const secretGate = document.getElementById("secretGate");
 
   const canOpenGate =
-    stamps.includes("stamp8") &&
-    stamps.includes("stamp9");
-
+  stamps.includes("stamp8") &&
+  stamps.includes("stamp9") &&
+  sevenAttributeKeys.every(
+    key => stamps.includes(key)
+  );
   if (canOpenGate && !hasFinalStamp) {
   secretGate.style.display = "block";
 } else {
@@ -577,14 +665,16 @@ let ritualRunning = false;
 
 function startSecretRitual() {
   // 第8紋と第9紋の両方が必要
-  if (
-    !stamps.includes("stamp8") ||
-    !stamps.includes("stamp9") ||
-    ritualRunning
-  ) {
-    return;
-  }
-
+if (
+  !stamps.includes("stamp8") ||
+  !stamps.includes("stamp9") ||
+  sevenAttributeKeys.some(
+    key => !stamps.includes(key)
+  ) ||
+  ritualRunning
+) {
+  return;
+}
   ritualRunning = true;
 
   const gate = document.getElementById("secretGate");
